@@ -53,3 +53,14 @@ resource "google_compute_global_address" "create_reserved_ip" {
     module.create_vpc_and_subnet
   ]
 }
+
+resource "google_service_networking_connection" "peer_with_service_networking" {
+  network                 =  "projects/${local.project_id}/global/networks/${local.vpc_nm}"
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.create_reserved_ip.name]
+
+  depends_on = [
+    module.create_vpc_and_subnet,
+    google_compute_global_address.create_reserved_ip
+  ]
+}
