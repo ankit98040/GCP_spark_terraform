@@ -77,3 +77,19 @@ resource "google_compute_router" "create_nat_router" {
     google_compute_firewall.create_subnet_firewall_rule
   ]
 }
+
+
+/******************************************
+Creation of a NAT
+*******************************************/
+resource "google_compute_router_nat" "create_nat" {
+  name                               = local.nat_nm
+  router                             = local.nat_router_nm
+  region                             = "${var.location}"
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+
+  depends_on = [
+    google_compute_router.create_nat_router
+  ]
+}
