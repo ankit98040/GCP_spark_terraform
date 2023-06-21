@@ -93,3 +93,18 @@ resource "google_compute_router_nat" "create_nat" {
     google_compute_router.create_nat_router
   ]
 }
+
+
+/*******************************************
+Introducing sleep to minimize errors from
+dependencies having not completed
+********************************************/
+
+resource "time_sleep" "sleep_after_network_resources_creation" {
+  create_duration = "60s"
+  depends_on = [
+    google_compute_router_nat.create_nat,
+    google_service_networking_connection.peer_with_service_networking
+
+  ]
+}
