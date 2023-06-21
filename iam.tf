@@ -26,6 +26,7 @@ module "umsa_role_grants" {
     "roles/metastore.admin",
     "roles/metastore.editor",
     "roles/dataproc.editor",
+    "roles/dataproc.admin",
     "roles/dataproc.worker",
     "roles/bigquery.dataEditor",
     "roles/bigquery.admin",
