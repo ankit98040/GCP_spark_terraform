@@ -36,3 +36,20 @@ resource "google_compute_firewall" "create_subnet_firewall_rule" {
     module.create_vpc_and_subnet
   ]
 }
+
+/******************************************
+Creation of reserved IP (Vertex AI Workbench)
+*******************************************/
+
+resource "google_compute_global_address" "create_reserved_ip" { 
+  provider      = google-beta
+  name          = "private-service-access-ip"
+  purpose       = "VPC_PEERING"
+  network       =  "projects/${local.project_id}/global/networks/${local.vpc_nm}"
+  address_type  = "INTERNAL"
+  prefix_length = local.psa_ip_length
+  
+  depends_on = [
+    module.create_vpc_and_subnet
+  ]
+}
