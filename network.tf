@@ -64,3 +64,16 @@ resource "google_service_networking_connection" "peer_with_service_networking" {
     google_compute_global_address.create_reserved_ip
   ]
 }
+
+/******************************************
+Creation of a router
+*******************************************/
+resource "google_compute_router" "create_nat_router" {
+  name    =local.nat_router_nm
+  region  = "${var.location}"
+  network  = local.vpc_nm
+
+  depends_on = [
+    google_compute_firewall.create_subnet_firewall_rule
+  ]
+}
