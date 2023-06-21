@@ -17,3 +17,22 @@ module "create_vpc_and_subnet" {
     }
   ]
 }
+
+
+/******************************************
+Creation of firewall rules
+*******************************************/
+resource "google_compute_firewall" "create_subnet_firewall_rule" {
+  project   = local.project_id 
+  name      = "allow-intra-snet-ingress-to-any"
+  network   = local.vpc_nm
+  direction = "INGRESS"
+  source_ranges = [local.subnet_cidr]
+  allow {
+    protocol = "all"
+  }
+  description        = "Creates firewall rule to allow ingress from within Spark subnet on all ports, all protocols"
+  depends_on = [
+    module.create_vpc_and_subnet
+  ]
+}
