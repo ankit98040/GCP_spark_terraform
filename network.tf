@@ -54,57 +54,57 @@ resource "google_compute_firewall" "create_subnet_firewall_rule" {
 #   ]
 # }
 
-resource "google_service_networking_connection" "peer_with_service_networking" {
-  network                 =  "projects/${local.project_id}/global/networks/${local.vpc_nm}"
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.create_reserved_ip.name]
+# resource "google_service_networking_connection" "peer_with_service_networking" {
+#   network                 =  "projects/${local.project_id}/global/networks/${local.vpc_nm}"
+#   service                 = "servicenetworking.googleapis.com"
+#   reserved_peering_ranges = [google_compute_global_address.create_reserved_ip.name]
 
-  depends_on = [
-    module.create_vpc_and_subnet,
-    google_compute_global_address.create_reserved_ip
-  ]
-}
+#   depends_on = [
+#     module.create_vpc_and_subnet,
+#     google_compute_global_address.create_reserved_ip
+#   ]
+# }
 
-/******************************************
-Creation of a router
-*******************************************/
-resource "google_compute_router" "create_nat_router" {
-  name    =local.nat_router_nm
-  region  = "${var.location}"
-  network  = local.vpc_nm
+# /******************************************
+# Creation of a router
+# *******************************************/
+# resource "google_compute_router" "create_nat_router" {
+#   name    =local.nat_router_nm
+#   region  = "${var.location}"
+#   network  = local.vpc_nm
 
-  depends_on = [
-    google_compute_firewall.create_subnet_firewall_rule
-  ]
-}
-
-
-/******************************************
-Creation of a NAT
-*******************************************/
-resource "google_compute_router_nat" "create_nat" {
-  name                               = local.nat_nm
-  router                             = local.nat_router_nm
-  region                             = "${var.location}"
-  nat_ip_allocate_option             = "AUTO_ONLY"
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-
-  depends_on = [
-    google_compute_router.create_nat_router
-  ]
-}
+#   depends_on = [
+#     google_compute_firewall.create_subnet_firewall_rule
+#   ]
+# }
 
 
-/*******************************************
-Introducing sleep to minimize errors from
-dependencies having not completed
-********************************************/
+# /******************************************
+# Creation of a NAT
+# *******************************************/
+# resource "google_compute_router_nat" "create_nat" {
+#   name                               = local.nat_nm
+#   router                             = local.nat_router_nm
+#   region                             = "${var.location}"
+#   nat_ip_allocate_option             = "AUTO_ONLY"
+#   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 
-resource "time_sleep" "sleep_after_network_resources_creation" {
-  create_duration = "60s"
-  depends_on = [
-    google_compute_router_nat.create_nat,
-    google_service_networking_connection.peer_with_service_networking
+#   depends_on = [
+#     google_compute_router.create_nat_router
+#   ]
+# }
 
-  ]
-}
+
+# /*******************************************
+# Introducing sleep to minimize errors from
+# dependencies having not completed
+# ********************************************/
+
+# resource "time_sleep" "sleep_after_network_resources_creation" {
+#   create_duration = "60s"
+#   depends_on = [
+#     google_compute_router_nat.create_nat,
+#     google_service_networking_connection.peer_with_service_networking
+
+#   ]
+# }
