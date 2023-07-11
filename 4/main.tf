@@ -15,7 +15,7 @@ locals {
 }
 
 module "google_compute_engine" {
-  source                  = "./modules/google_compute_engine"
+  source                  = "./modules/google_compute_network"
   auto_create_subnetworks = false
   ip_cidr_range           = "10.2.0.0/16"
   project_id              = var.project_id
@@ -24,11 +24,12 @@ module "google_compute_engine" {
 }
 
 module "google_cloud_platform" {
-  source       = "./modules/google_cloud_platform"
+  source       = "./modules/Service_account_roles"
   account_id   = "composer-env-account"
   display_name = "Test Service Account for Composer Environment"
   project_id   = var.project_id
   iam_role     = "roles/composer.ServiceAgentV2Ext"
+  
 }
 
 module "google_cloud_composer" {
