@@ -5,6 +5,9 @@ resource "google_composer_environment" "this" {
   config {
     software_config {
       image_version = "composer-2-airflow-2"
+      pypi_packages = {
+          papermill = "2.4.0"
+      }
     }
 
     workloads_config {
